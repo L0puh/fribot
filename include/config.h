@@ -1,0 +1,15 @@
+#ifndef MAIN_CONFIG_H
+#define MAIN_CONFIG_H 
+
+
+#define I2C_MASTER_SCL_IO  22
+#define I2C_MASTER_SDA_IO  21
+
+#define MPU6050_DEFAULT_ADDRESS 0x68
+#define MPU6050_DEFAULT_CLOCK 100000 // 1MHz 
+
+// MPU sensitivity
+#define ACCEL_FULL_SCALE_RANGE 8192 
+#define GYRO_FULL_SCALE_RANGE 65.5
+
+#endif

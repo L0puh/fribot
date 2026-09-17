@@ -8,8 +8,9 @@
 #ifndef FRIBOT_H
 #define FRIBOT_H
 
-// CORE: 
-#include <blink.h>
+
+#include "config.h"
+
 
 
 #endif 
