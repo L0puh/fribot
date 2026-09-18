@@ -12,4 +12,7 @@
 #define ACCEL_FULL_SCALE_RANGE 8192 
 #define GYRO_FULL_SCALE_RANGE 65.5
 
+
+#define BLINK_LED_PIN 4
+
 #endif

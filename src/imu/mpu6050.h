@@ -98,5 +98,6 @@ typedef enum {
 #define MPU6050_FIFO_COUNTL 0x73        /** FIFO_COUNTL */
 #define MPU6050_FIFO_R_W 0x74           /** FIFO_R_W */
 #define MPU6050_WHO_AM_I 0x75           /** WHO_AM_I */
+#define MPU6050_WHO_AM_I_VAL 0x70       /** expected WHO_AM_I value **/
 
 #endif

@@ -13,13 +13,12 @@
 #include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
- 
 
-#define BLINK_GPIO GPIO_NUM_2
-#define BLINK_PERIOD_MS 500
+#define BLINK_DEBUG GPIO_NUM_2
+#define BLINK_PERIOD_MS 700
 
-void blink_setup(void);
-void blink_times(size_t count);
+esp_err_t blink_setup(const uint8_t pin);
+void blink_times(const uint8_t pin, const uint32_t count);
 
 
 #endif 
