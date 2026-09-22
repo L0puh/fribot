@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}FRIBOT / flash{% endblock %}
+
+{% block content %}
+
+<h1>flash</h1>
+
+{% if flash_configured %}
+
+<form action="/flash" method="post" enctype="multipart/form-data">
+    <input type="file" name="firmware" accept=".bin,.hex,.elf,.uf2" required>
+    <button type="submit" {% if flash_running %}disabled{% endif %}>
+        {% if flash_running %}flashing...{% else %}flash{% endif %}
+    </button>
+</form>
+
+{% else %}
+
+<p class="error">FLASH_COMMAND is not configured.</p>
+
+{% endif %}
+
+<h2>logs</h2>
+
+{% for log in logs %}
+    <a href="/monitor?file={{ log.name }}">{{ log.name }}</a><br>
+{% else %}
+    <span class="muted">no logs</span>
+{% endfor %}
+
+{% endblock %}
+

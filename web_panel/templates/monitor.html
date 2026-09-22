@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}FRIBOT / monitor{% endblock %}
+
+{% block content %}
+
+{% if flash_running %}
+<meta http-equiv="refresh" content="2">
+{% endif %}
+
+<h1>monitor</h1>
+
+<!-- ===== serial console ===== -->
+<h2>serial</h2>
+
+<form method="post" action="/monitor/start" style="display:inline">
+    <button>start</button>
+</form>
+<form method="post" action="/monitor/stop" style="display:inline">
+    <button>stop</button>
+</form>
+
+<pre id="out" style="height:400px;overflow:auto;background:#111;color:#0f0;padding:1em;"></pre>
+
+<script>
+setInterval(async () => {
+    const r = await fetch('/monitor/data').then(r => r.json());
+    const el = document.getElementById('out');
+    el.textContent = r.lines.join('\n');
+    el.scrollTop = el.scrollHeight;
+}, 500);
+</script>
+
+{% if selected %}
+<h2>logs</h2>
+<p>
+    {{ selected.name }}
+    · <a href="/logs/{{ selected.name }}">save</a>
+</p>
+<pre>{{ content }}</pre>
+{% else %}
+<p class="muted">no logs</p>
+{% endif %}
+
+<h2>logs</h2>
+{% for log in logs %}
+    <a href="/monitor?file={{ log.name }}">{{ log.name }}</a><br>
+{% endfor %}
+
+{% endblock %}
