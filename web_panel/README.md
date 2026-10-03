@@ -9,9 +9,13 @@ pip install -r requirements.txt
 ```
 
 
+## use 
+
 the site executes a command through `FLASH_COMMAND`.
+add `.env` with:
 
 ```bash
-export FLASH_COMMAND='idf.py flash'
+FLASK_SECRET="..."
+FLASH_COMMAND="esptool.py --chip esp32 --port /dev/ttyUSB0 --baud 921600 write_flash 0x10000 {firmware}"
 ```
 

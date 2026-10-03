@@ -12,7 +12,12 @@
 #define ACCEL_FULL_SCALE_RANGE 8192 
 #define GYRO_FULL_SCALE_RANGE 65.5
 
+#define BLINK_LED_PIN 2
 
-#define BLINK_LED_PIN 4
+// motors 
+#define MOTOR_A_IN1 (32)
+#define MOTOR_A_IN2 (33)
+#define MOTOR_B_IN1 (25)
+#define MOTOR_B_IN2 (26)
 
 #endif

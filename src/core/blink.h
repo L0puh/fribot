@@ -19,6 +19,6 @@
 
 esp_err_t blink_setup(const uint8_t pin);
 void blink_times(const uint8_t pin, const uint32_t count);
-
+void heartbeat(void *arg);
 
 #endif 

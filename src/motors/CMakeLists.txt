@@ -1,10 +1,10 @@
-set(CORE_SRCS 
-    blink.c
-    entry.c
+set(MOTORS_SRCS 
+   motors.c
+   balance.c
 )
 
 idf_component_register(
-    SRCS ${CORE_SRCS}
+     SRCS ${MOTORS_SRCS}
     INCLUDE_DIRS 
         "." 
         "../../include"
@@ -12,6 +12,6 @@ idf_component_register(
         freertos
         esp_driver_gpio
         esp_driver_i2c
+        esp_driver_mcpwm
         imu
-        motors
 )

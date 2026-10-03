@@ -1,5 +1,6 @@
 #include "blink.h"
 #include "esp_err.h"
+#include "config.h"
 
 static esp_err_t blink_led(uint8_t pin, bool led_state)
 {
@@ -26,5 +27,17 @@ void blink_times(const uint8_t pin, const uint32_t count)
       vTaskDelay(pdMS_TO_TICKS(BLINK_PERIOD_MS));
       ESP_ERROR_CHECK(blink_led(pin, false));
       vTaskDelay(pdMS_TO_TICKS(BLINK_PERIOD_MS));
+   }
+}
+
+void heartbeat(void *arg)
+{
+   gpio_set_direction(BLINK_LED_PIN, GPIO_MODE_OUTPUT);
+
+   while (1) {
+      gpio_set_level(BLINK_LED_PIN, 1);
+      vTaskDelay(pdMS_TO_TICKS(400));
+      gpio_set_level(BLINK_LED_PIN, 0);
+      vTaskDelay(pdMS_TO_TICKS(500));
    }
 }

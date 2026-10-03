@@ -5,6 +5,7 @@
 #include "blink.h"
 #include "imu.h"
 #include "mpu6050.h"
+#include "motors.h"
 
 
 void dead_loop() {
@@ -30,7 +31,8 @@ void app_main(void) {
    ESP_ERROR_CHECK(ret);
    ESP_LOGE("entry", "imu init successfull!");
 
-   blink_times(BLINK_LED_PIN, 3);
+   xTaskCreate(heartbeat, "heartbeat", 2048, NULL, 1, NULL);
+
    imu_raw_data_t raw_data;
    while (true)
    {
