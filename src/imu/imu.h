@@ -11,6 +11,7 @@ typedef struct {
   i2c_master_dev_handle_t i2c_dev_handle;
   float accel_sens; 
   float gyro_sens;
+  bool enabled;
 } imu_handle_t;
 
 typedef struct {

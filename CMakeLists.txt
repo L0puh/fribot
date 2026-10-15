@@ -5,6 +5,7 @@ set(EXTRA_COMPONENT_DIRS
       ${CMAKE_CURRENT_LIST_DIR}/src/core
       ${CMAKE_CURRENT_LIST_DIR}/src/imu
       ${CMAKE_CURRENT_LIST_DIR}/src/motors
+      ${CMAKE_CURRENT_LIST_DIR}/src/rx
    )
 
 project(fribot)

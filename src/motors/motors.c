@@ -144,3 +144,7 @@ esp_err_t motor_stop(motor_t* motor)
 {
    return motor_set_speed(motor, 0);
 }
+
+void toggle_motor(uint8_t num){
+   
+}
