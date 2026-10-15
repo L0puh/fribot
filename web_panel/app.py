@@ -32,6 +32,7 @@ current_log = None
 serial_buf = deque(maxlen=500)
 serial_stop = threading.Event()
 serial_conn = None
+write_lock = threading.Lock()
 
 serial_log_path = None
 
@@ -52,9 +53,12 @@ def reader():
         serial_buf.append(f"ERROR: {e}")
     finally:
         if serial_conn: serial_conn.close()
+        serial_conn = None 
 
 @app.post("/monitor/start")
 def monitor_start():
+    if serial_conn is not None and not serial_stop.is_set():
+        return redirect(url_for("monitor"))
     serial_stop.clear()
     serial_buf.clear()
     threading.Thread(target=reader, daemon=True).start()
@@ -172,6 +176,26 @@ def flash_firmware():
     flash("flash started. open the monitor to follow the saved log.", "ok")
     return redirect(url_for("monitor"))
 
+
+@app.post("/monitor/send")
+def monitor_send():
+    cmd = (request.get_json(silent=True) or {}).get("cmd", "")
+    cmd = cmd.replace("\r", " ").replace("\n", " ").strip()   
+    if not cmd or len(cmd) > 100:
+        return {"ok": False, "error": "empty or too long"}, 400
+
+    conn = serial_conn
+    if serial_stop.is_set() or conn is None or not conn.is_open:
+        return {"ok": False, "error": "monitor is not running, press start"}, 409
+
+    try:
+        with write_lock:
+            conn.write((cmd + "\n").encode("utf-8"))
+            conn.flush()
+    except Exception as e:
+        return {"ok": False, "error": str(e)}, 500
+
+    return {"ok": True}
 
 @app.get("/monitor")
 def monitor():

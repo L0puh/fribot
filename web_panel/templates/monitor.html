@@ -22,6 +22,41 @@
 
 <pre id="out" style="height:400px;overflow:auto;background:#111;color:#0f0;padding:1em;"></pre>
 
+<form id="cmdform" style="margin:1em 0">
+    <input id="cmd" autocomplete="off" placeholder="toggle motor_a" style="width:60%">
+    <button>send</button>
+</form>
+
+<p>
+    <button class="quick" data-cmd="toggle motor_a">motor A</button>
+    <button class="quick" data-cmd="toggle motor_b">motor B</button>
+    <button class="quick" data-cmd="toggle imu">IMU</button>
+</p>
+<p id="err" style="color:red"></p>
+
+<script>
+async function sendCmd(cmd) {
+    const r = await fetch('/monitor/send', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({cmd})
+    });
+    const j = await r.json();
+    document.getElementById('err').textContent = j.ok ? '' : j.error;
+}
+
+document.getElementById('cmdform').addEventListener('submit', async e => {
+    e.preventDefault();
+    const input = document.getElementById('cmd');
+    if (input.value.trim()) await sendCmd(input.value);
+    input.value = '';
+});
+
+document.querySelectorAll('.quick').forEach(b =>
+    b.addEventListener('click', () => sendCmd(b.dataset.cmd)));
+</script>
+
+
 <script>
 setInterval(async () => {
     const r = await fetch('/monitor/data').then(r => r.json());

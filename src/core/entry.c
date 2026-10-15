@@ -86,6 +86,7 @@ void debug_loop(void)
       if (ctx_g.motors[0].enabled)
       {
          motor_forward(&ctx_g.motors[0], 150);
+      } else {
          motor_stop(&ctx_g.motors[0]);
       }
 
