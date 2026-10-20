@@ -2,6 +2,7 @@ set(RX_SRCS
    rx.c 
    cmd.c 
    console.c
+   wifi.c
 )
 
 idf_component_register(
@@ -14,4 +15,5 @@ idf_component_register(
         esp_driver_gpio
         esp_driver_i2c
         console
+        esp_wifi
 )

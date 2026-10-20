@@ -15,4 +15,5 @@ idf_component_register(
         imu
         motors
         rx
+        nvs_flash
 )

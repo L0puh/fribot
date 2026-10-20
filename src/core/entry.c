@@ -9,6 +9,9 @@
 #include "motors.h"
 #include "cmd.h"
 #include "context.h"
+#include "wifi.h"
+
+#include <nvs_flash.h>
 
 static int dbg_do_toggle(int argc, char **argv)
 {
@@ -52,6 +55,19 @@ esp_err_t setup(void)
 
    blink_setup(BLINK_LED_PIN);
    blink_setup(BLINK_DEBUG);
+
+
+   // nvs setup for wifi
+   ret = nvs_flash_init();
+   if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
+      ESP_ERROR_CHECK(nvs_flash_erase());
+      ret = nvs_flash_init();
+   }
+   ESP_ERROR_CHECK(ret);
+
+   ESP_LOGI("entry", "nvs init ok");
+
+   wifi_init_softap();
    
    ret = imu_init(&ctx_g.imu_handle, imu_default_config());
 
@@ -66,6 +82,7 @@ esp_err_t setup(void)
 
    setup_motors(&ctx_g.motors[0], &ctx_g.motors[1]);
    xTaskCreate(heartbeat, "heartbeat", 2048, NULL, 1, NULL);
+
    ESP_LOGI("entry", "SETUP OK!");
    return ret;
 }
@@ -80,19 +97,25 @@ void debug_loop(void)
    ESP_ERROR_CHECK(ret);
    ESP_LOGI("entry", "ready to start the loop");
 
+   ctx_g.motors[0].enabled = false;
+   ctx_g.motors[1].enabled = false;
+
    while (true)
    {
+      if (wifi_is_station_connected()){
+         ESP_LOGI("entry", "connected!");
+      }
 
       if (ctx_g.motors[0].enabled)
       {
-         motor_forward(&ctx_g.motors[0], 150);
+         motor_backward(&ctx_g.motors[0], 165);
       } else {
          motor_stop(&ctx_g.motors[0]);
       }
 
       if (ctx_g.motors[1].enabled)
       {
-         motor_forward(&ctx_g.motors[1], 150);
+         motor_backward(&ctx_g.motors[1], 165);
       } else {
          motor_stop(&ctx_g.motors[1]);
       }
@@ -116,8 +139,7 @@ void debug_loop(void)
          }
       }
 
-
-      vTaskDelay(pdMS_TO_TICKS(1000));
+      vTaskDelay(pdMS_TO_TICKS(2));
    }
 }
 
