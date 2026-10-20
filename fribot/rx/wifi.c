@@ -7,11 +7,11 @@
 
 #include "config.h"
 
-static volatile bool g_station_connected = false;
+static volatile bool s_station_connected = false;
 
 bool wifi_is_station_connected(void)
 {
-   return g_station_connected;
+   return s_station_connected;
 }
 
 static void wifi_event_handler(void* arg, esp_event_base_t even_base,
@@ -24,7 +24,7 @@ static void wifi_event_handler(void* arg, esp_event_base_t even_base,
             wifi_event_ap_staconnected_t* event = (wifi_event_ap_staconnected_t*) data;
             ESP_LOGI("wifi", "connection AID=%d from MAC "MACSTR"",
                                        event->aid, MAC2STR(event->mac));
-            g_station_connected = true;
+            s_station_connected = true;
             break;
          }
       case WIFI_EVENT_AP_STADISCONNECTED:
@@ -32,7 +32,7 @@ static void wifi_event_handler(void* arg, esp_event_base_t even_base,
             wifi_event_ap_stadisconnected_t* event = (wifi_event_ap_stadisconnected_t*) data;
             ESP_LOGI("wifi", "disconnected AID=%d MAC "MACSTR" (reason=%d)", event->aid, 
                   MAC2STR(event->mac));
-            g_station_connected = false;
+            s_station_connected = false;
             break;
          }
 

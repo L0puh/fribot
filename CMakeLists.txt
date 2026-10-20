@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.16)
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 
 set(EXTRA_COMPONENT_DIRS 
-      ${CMAKE_CURRENT_LIST_DIR}/src/core
-      ${CMAKE_CURRENT_LIST_DIR}/src/imu
-      ${CMAKE_CURRENT_LIST_DIR}/src/motors
-      ${CMAKE_CURRENT_LIST_DIR}/src/rx
+      ${CMAKE_CURRENT_LIST_DIR}/fribot/core
+      ${CMAKE_CURRENT_LIST_DIR}/fribot/imu
+      ${CMAKE_CURRENT_LIST_DIR}/fribot/motors
+      ${CMAKE_CURRENT_LIST_DIR}/fribot/rx
    )
 
 project(fribot)
