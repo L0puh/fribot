@@ -78,6 +78,10 @@ esp_err_t wifi_station_init(void)
 
    esp_netif_create_default_wifi_sta();
 
+   wifi_init_config_t wifi_init_cfg = WIFI_INIT_CONFIG_DEFAULT();
+   ret = esp_wifi_init(&wifi_init_cfg);
+   ESP_ERROR_CHECK(ret);
+
    esp_event_handler_instance_t inst_any_id, inst_got_ip;
 
    ret = esp_event_handler_instance_register(WIFI_EVENT, ESP_EVENT_ANY_ID,
@@ -100,6 +104,9 @@ esp_err_t wifi_station_init(void)
    ret = esp_wifi_set_mode(WIFI_MODE_STA);
    ESP_ERROR_CHECK(ret);
    ret = esp_wifi_set_config(WIFI_IF_STA, &cfg);
+   ESP_ERROR_CHECK(ret);
+
+   ret = esp_wifi_start();
    ESP_ERROR_CHECK(ret);
 
    ESP_LOGI("wifi", "wifi init is finished");
