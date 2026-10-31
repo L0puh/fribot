@@ -1,5 +1,8 @@
 
+#include "esp_err.h"
+#include "joystick.h"
 #include "wifi.h"
+#include "menu.h"
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
@@ -20,9 +23,29 @@ void setup(void)
       ESP_LOGI("entry", "couldn't connect to fribot, entering 5m sleep");
       vTaskDelay(pdMS_TO_TICKS(5 * 60 * 1000));   
    }
+
+   ret = joystick_init();
+   ret = menu_init();
+}
+
+void loop(void)
+{
+   //FIXME: run joystick & menu as separate tasks 
+   while(1){
+      joystick_update();
+      menu_update();
+      
+      if (menu_get_state().button.is_pressed) {
+         pos_t p = joystick_get_pos();
+         ESP_LOGI("entry", "current pos: x=%d y=%d", p.i.x, p.i.y);
+      }
+
+      vTaskDelay(pdMS_TO_TICKS(10));
+   }
 }
 
 void app_main(void) 
 {
    setup();
+   loop();
 }

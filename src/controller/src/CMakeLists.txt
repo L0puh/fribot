@@ -2,6 +2,8 @@ set(CORE_SRCS
    wifi.c 
    control.c 
    entry.c 
+   joystick.c
+   menu.c
 )
 
 idf_component_register(
@@ -15,4 +17,6 @@ idf_component_register(
         esp_driver_i2c
         nvs_flash
         esp_wifi 
+        esp_adc
+        esp_timer
 )

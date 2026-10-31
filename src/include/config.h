@@ -28,4 +28,12 @@
 #define FRIBOT_WIFI_CHANNEL 1
 #define FRIBOT_MAX_STA_CONN 4
 
+
+// controller 
+//TODO: MS? 
+#define JOY_ADC_UNIT       ADC_UNIT_1
+#define JOY_X_CHANNEL      ADC_CHANNEL_6   // GPIO34
+#define JOY_Y_CHANNEL      ADC_CHANNEL_7   // GPIO35
+#define BUTTON_PIN         GPIO_NUM_26
+
 #endif
