@@ -16,4 +16,5 @@ idf_component_register(
         motors
         rx
         nvs_flash
+        esp_timer
 )

@@ -16,4 +16,5 @@ idf_component_register(
         esp_driver_i2c
         console
         esp_wifi
+        esp_timer
 )

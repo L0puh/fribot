@@ -12,6 +12,9 @@
 #include <freertos/task.h>
 
 #include "config.h"
+#include "joystick.h"
+#include "lwip/inet.h"
+#include "lwip/sockets.h"
 #include "wifi.h"
 
 static EventGroupHandle_t s_wifi_event_group;

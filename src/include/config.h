@@ -28,6 +28,9 @@
 #define FRIBOT_WIFI_CHANNEL 1
 #define FRIBOT_MAX_STA_CONN 4
 
+#define FRIBOT_IP       "192.168.4.1"
+#define FRIBOT_PORT     5000
+
 
 // controller 
 //TODO: MS? 

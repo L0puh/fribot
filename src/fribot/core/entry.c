@@ -10,8 +10,12 @@
 #include "cmd.h"
 #include "context.h"
 #include "wifi.h"
+#include "rx.h"
 
 #include <nvs_flash.h>
+#include <stdint.h>
+#include <esp_timer.h>
+#include <string.h>
 
 static int dbg_do_toggle(int argc, char **argv)
 {
@@ -68,6 +72,7 @@ esp_err_t setup(void)
    ESP_LOGI("entry", "nvs init ok");
 
    wifi_init_softap();
+   udp_server_init();
    
    ret = imu_init(&ctx_g.imu_handle, imu_default_config());
 
@@ -87,90 +92,67 @@ esp_err_t setup(void)
    return ret;
 }
 
-// debug version to test the components
-void debug_loop(void)
+void loop(void)
 {
-   esp_err_t ret;
-   imu_raw_data_t data;
+   // esp_err_t ret;
+   // imu_raw_data_t data;
+   bool controller_connected = false;
 
+#ifdef DEBUG_CONSOLE
    ret = setup_console(&dbg_do_toggle);
-   ESP_ERROR_CHECK(ret);
+#else 
+   xTaskCreate(rx_task, "rx task", 4096, NULL, 5, NULL);
+#endif 
+  // ESP_ERROR_CHECK(ret);
    ESP_LOGI("entry", "ready to start the loop");
 
    ctx_g.motors[0].enabled = false;
    ctx_g.motors[1].enabled = false;
-
+   
+   int64_t last_time = -1;
    while (true)
    {
-      if (wifi_is_station_connected()){
-         ESP_LOGI("entry", "connected!");
-      }
-
-      if (ctx_g.motors[0].enabled)
-      {
-         motor_backward(&ctx_g.motors[0], 165);
+      if (!controller_connected ){
+         controller_connected = wifi_is_station_connected();
+         ESP_LOGI("entry", "controller is %sconnected", controller_connected ? "": "dis");
       } else {
-         motor_stop(&ctx_g.motors[0]);
-      }
-
-      if (ctx_g.motors[1].enabled)
-      {
-         motor_backward(&ctx_g.motors[1], 165);
-      } else {
-         motor_stop(&ctx_g.motors[1]);
-      }
-
-      if (ctx_g.imu_handle.enabled)
-      {
          ctx_g.raw_data.recv_accel = false, ctx_g.raw_data.recv_gyro = false;
 
-         ret = imu_read_raw_data(&ctx_g.imu_handle, &ctx_g.raw_data);
-         ESP_ERROR_CHECK(ret);
+         //ret = imu_read_raw_data(&ctx_g.imu_handle, &ctx_g.raw_data);
+         //ESP_ERROR_CHECK(ret);
 
-         data = ctx_g.raw_data;
 
-         if (data.recv_accel){
-            printf("accel: x = %d, y = %d, z = %d\n", (int)data.accel.x, 
-                  (int)data.accel.y, (int)data.accel.z);
+         ////TODO: handle imu balance 
+         //data = ctx_g.raw_data;
+         //if (data.recv_accel){
+         //   printf("accel: x = %d, y = %d, z = %d\n", (int)data.accel.x, 
+         //         (int)data.accel.y, (int)data.accel.z);
+
+         //}
+         //if (data.recv_gyro){
+         //   printf("gyro: x = %d, y = %d, z = %d\n", (int)data.gyro.x, 
+         //         (int)data.gyro.y, (int)data.gyro.z);
+         //}
+
+         // debug version for now
+
+         rx_data_t rx_data = rx_get_data();
+         ESP_LOGI("entry", "reading rx data: %lld ms / %lld ms", rx_data.last_ms, last_time);
+         if (rx_data.last_ms != last_time)
+         {
+            last_time = rx_data.last_ms;
+            motor_backward(&ctx_g.motors[0], 165);
+            motor_backward(&ctx_g.motors[1], 165);
+         } else {
+            motor_stop(&ctx_g.motors[0]);
+            motor_stop(&ctx_g.motors[1]);
          }
-         if (data.recv_gyro){
-            printf("gyro: x = %d, y = %d, z = %d\n", (int)data.gyro.x, 
-                  (int)data.gyro.y, (int)data.gyro.z);
-         }
       }
-
-      vTaskDelay(pdMS_TO_TICKS(2));
-   }
-}
-
-void loop(void)
-{
-   esp_err_t ret;
-   imu_raw_data_t data;
-   while (true)
-   {
-      ctx_g.raw_data.recv_accel = false, ctx_g.raw_data.recv_gyro = false;
-
-      ret = imu_read_raw_data(&ctx_g.imu_handle, &ctx_g.raw_data);
-      ESP_ERROR_CHECK(ret);
-
-      data = ctx_g.raw_data;
-
-      if (data.recv_accel){
-         printf("accel: x = %d, y = %d, z = %d\n", (int)data.accel.x, 
-               (int)data.accel.y, (int)data.accel.z);
-
-      }
-      if (data.recv_gyro){
-         printf("gyro: x = %d, y = %d, z = %d\n", (int)data.gyro.x, 
-               (int)data.gyro.y, (int)data.gyro.z);
-      }
-
-      vTaskDelay(pdMS_TO_TICKS(1000));
+      vTaskDelay(pdMS_TO_TICKS(100));
    }
 }
 
 void app_main(void) {
    setup();
-   debug_loop();
+   loop();
 }

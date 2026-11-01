@@ -4,6 +4,7 @@ set(CORE_SRCS
    entry.c 
    joystick.c
    menu.c
+   udp.c
 )
 
 idf_component_register(

@@ -1,7 +1,6 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 
-
 #include "imu.h"
 #include "motors.h"
 
