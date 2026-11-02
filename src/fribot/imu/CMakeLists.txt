@@ -1,5 +1,6 @@
 set(IMU_SRCS
    imu.c
+   sonar.c
 )
 
 idf_component_register(
@@ -11,5 +12,7 @@ idf_component_register(
         freertos
         esp_driver_gpio
         esp_driver_i2c
+        esp_driver_rmt 
+        esp_timer
 )
 

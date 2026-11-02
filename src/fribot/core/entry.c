@@ -9,6 +9,7 @@
 #include "motors.h"
 #include "cmd.h"
 #include "context.h"
+#include "sonar.h"
 #include "wifi.h"
 #include "rx.h"
 
@@ -88,6 +89,9 @@ esp_err_t setup(void)
    setup_motors(&ctx_g.motors[0], &ctx_g.motors[1]);
    xTaskCreate(heartbeat, "heartbeat", 2048, NULL, 1, NULL);
 
+   ret = sonar_init();
+   ESP_ERROR_CHECK(ret);
+
    ESP_LOGI("entry", "SETUP OK!");
    return ret;
 }
@@ -135,14 +139,35 @@ void loop(void)
          //}
 
          // debug version for now
-
+            
+         float distance = sonar_measure_cm();
          rx_data_t rx_data = rx_get_data();
          ESP_LOGI("entry", "reading rx data: %lld ms / %lld ms", rx_data.last_ms, last_time);
+         ESP_LOGI("entry", "distance measured: %2f", distance);
          if (rx_data.last_ms != last_time)
          {
             last_time = rx_data.last_ms;
-            motor_backward(&ctx_g.motors[0], 165);
-            motor_backward(&ctx_g.motors[1], 165);
+
+            if (distance >= 0.0f && distance <= 5.0f) {
+               motor_stop(&ctx_g.motors[0]);
+               motor_stop(&ctx_g.motors[1]);
+               vTaskDelay(pdMS_TO_TICKS(200));
+
+               motor_backward(&ctx_g.motors[0], 165);
+               motor_backward(&ctx_g.motors[1], 165);
+               vTaskDelay(pdMS_TO_TICKS(400));
+
+               motor_forward(&ctx_g.motors[0], 165);
+               motor_backward(&ctx_g.motors[1], 165);
+               vTaskDelay(pdMS_TO_TICKS(500));
+
+               motor_stop(&ctx_g.motors[0]);
+               motor_stop(&ctx_g.motors[1]);
+
+            } else if (distance > 5.0f) {
+               motor_forward(&ctx_g.motors[0], 165);
+               motor_forward(&ctx_g.motors[1], 165);
+            }
          } else {
             motor_stop(&ctx_g.motors[0]);
             motor_stop(&ctx_g.motors[1]);

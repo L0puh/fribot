@@ -124,7 +124,8 @@ esp_err_t motor_init(motor_t *motor, mcpwm_timer_handle_t timer, int pin1, int p
    return ret;
 }
 
-esp_err_t motor_forward(motor_t* motor, int speed)
+// just the way my motors are wired... it's backward 
+esp_err_t motor_backward(motor_t* motor, int speed)
 {
    if (motor == NULL) return ESP_ERR_INVALID_ARG;
    if (speed < 0) speed = 0;
@@ -132,7 +133,7 @@ esp_err_t motor_forward(motor_t* motor, int speed)
    return motor_set_speed(motor, speed);
 }
 
-esp_err_t motor_backward(motor_t* motor, int speed)
+esp_err_t motor_forward(motor_t* motor, int speed)
 {
    if (motor == NULL) return ESP_ERR_INVALID_ARG;
    if (speed < 0) speed = 0;

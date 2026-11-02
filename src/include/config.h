@@ -39,4 +39,8 @@
 #define JOY_Y_CHANNEL      ADC_CHANNEL_7   // GPIO35
 #define BUTTON_PIN         GPIO_NUM_26
 
+// sonar sensor 
+#define SONAR_TRIG_PIN GPIO_NUM_5 
+#define SONAR_ECHO_PIN GPIO_NUM_14
+
 #endif
